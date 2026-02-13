@@ -49,6 +49,7 @@ export class TaskRepository {
     page: number = 1,
     available: boolean = false,
     estado?: TaskStatus,
+    assignedUserId?: string,
   ): Task[] {
     let result = this.tasks.filter((task) => !task.isDeleted);
 
@@ -58,6 +59,10 @@ export class TaskRepository {
 
     if (available) {
       result = result.filter((task) => task.status !== TaskStatus.COMPLETED);
+    }
+
+    if (assignedUserId) {
+      result = result.filter((task) => task.assignee?.id === assignedUserId);
     }
 
     result.sort((a, b) => {

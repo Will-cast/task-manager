@@ -86,6 +86,12 @@ export class TaskController {
     required: false,
     enum: TaskStatus,
   })
+  @ApiQuery({
+    name: 'assignedUserId',
+    required: false,
+    type: String,
+    description: 'Filter tasks by assignee user ID',
+  })
   @Get()
   findAll(
     @Query('order') order: 'asc' | 'desc' = 'desc',
@@ -95,8 +101,17 @@ export class TaskController {
     @Query('available', new DefaultValuePipe(false), ParseBoolPipe)
     available: boolean = false,
     @Query('estado') estado?: TaskStatus,
+    @Query('assignedUserId') assignedUserId?: string,
   ): Task[] {
-    return this.taskService.findAll(order, by, take, page, available, estado);
+    return this.taskService.findAll(
+      order,
+      by,
+      take,
+      page,
+      available,
+      estado,
+      assignedUserId,
+    );
   }
 
   @ApiOperation({

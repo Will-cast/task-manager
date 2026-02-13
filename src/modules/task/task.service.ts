@@ -30,6 +30,7 @@ export class TaskService {
     page: number = 1,
     available: boolean = false,
     estado?: TaskStatus,
+    assignedUserId?: string,
   ): Task[] {
     return this.taskRepository.findAll(
       order,
@@ -38,6 +39,7 @@ export class TaskService {
       page,
       available,
       estado,
+      assignedUserId,
     );
   }
 
