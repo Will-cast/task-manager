@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { TimeStamps } from 'src/common/types/timeStamps';
-import { IsEnum } from 'class-validator';
 import { TaskPriority, TaskStatus } from '../types';
 import { User } from 'src/modules/users/entities/user.entity';
 
@@ -27,14 +26,12 @@ export class Task extends TimeStamps {
     example: 'Pending',
     description: 'Status of the task',
   })
-  @IsEnum(TaskStatus, { message: 'invalid-status' })
   status: TaskStatus;
 
   @ApiProperty({
     example: 'High',
     description: 'Priority of the task',
   })
-  @IsEnum(TaskPriority, { message: 'invalid-priority' })
   priority: TaskPriority;
 
   @ApiProperty({
@@ -60,4 +57,10 @@ export class Task extends TimeStamps {
     description: 'Attachments of the task',
   })
   attachments: string[];
+
+  @ApiProperty({
+    example: false,
+    description: 'Is deleted',
+  })
+  isDeleted?: boolean;
 }

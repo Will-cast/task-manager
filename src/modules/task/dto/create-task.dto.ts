@@ -6,12 +6,14 @@ import {
   IsDate,
   IsArray,
   IsOptional,
+  IsBoolean,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { TaskPriority, TaskStatus } from '../types';
 import { User } from 'src/modules/users/entities/user.entity';
+import { TimeStamps } from 'src/common/types/timeStamps';
 
-export class CreateTaskDto {
+export class CreateTaskDto extends TimeStamps {
   @ApiProperty({
     example: 'Task 1',
     description: 'Title of the task',
@@ -76,4 +78,12 @@ export class CreateTaskDto {
   @IsArray({ message: 'invalid-attachments-type' })
   @IsOptional()
   attachments?: string[];
+
+  @ApiProperty({
+    example: false,
+    description: 'Is deleted',
+  })
+  @IsBoolean({ message: 'invalid-is-deleted-type' })
+  @IsOptional()
+  isDeleted?: boolean;
 }

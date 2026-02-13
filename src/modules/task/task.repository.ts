@@ -2,15 +2,36 @@ import { Injectable } from '@nestjs/common';
 import { Task } from './entities/task.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { TaskPriority, TaskStatus } from './types';
 
 @Injectable()
 export class TaskRepository {
-  private tasks: Task[] = [];
+  private tasks: Task[] = [
+    {
+      id: '1',
+      title: 'Task 1',
+      description: 'Task Example',
+      status: TaskStatus.PENDING,
+      priority: TaskPriority.LOW,
+      dueDate: new Date(),
+      assignee: {
+        id: '1',
+        name: 'William',
+        lastName: 'Quiñones',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      comments: ['Comment 1', 'Comment 2'],
+      attachments: ['image1.jpg', 'image2.png'],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ];
 
   create(createTaskDto: CreateTaskDto): Task {
     const newTask: Task = {
       ...createTaskDto,
-      id: (this.tasks.length + 1).toString(), // Simple ID generation
+      id: (this.tasks.length + 1).toString(),
       createdAt: new Date(),
       updatedAt: new Date(),
     } as Task;
@@ -41,8 +62,13 @@ export class TaskRepository {
   }
 
   remove(id: string): boolean {
-    const initialLength = this.tasks.length;
-    this.tasks = this.tasks.filter((task) => task.id !== id);
-    return this.tasks.length < initialLength;
+    const index = this.tasks.findIndex((task) => task.id === id);
+    if (index === -1) return false;
+    this.tasks[index] = {
+      ...this.tasks[index],
+      isDeleted: true,
+      deletedAt: new Date(),
+    } as Task;
+    return true;
   }
 }
