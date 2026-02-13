@@ -1,26 +1,41 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { TaskRepository } from './task.repository';
 
 @Injectable()
 export class TaskService {
+  constructor(private readonly taskRepository: TaskRepository) {}
+
   create(createTaskDto: CreateTaskDto) {
-    return 'This action adds a new task';
+    return this.taskRepository.create(createTaskDto);
   }
 
   findAll() {
-    return `This action returns all task`;
+    return this.taskRepository.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} task`;
+  findOne(id: string) {
+    const task = this.taskRepository.findOne(id);
+    if (!task) {
+      throw new NotFoundException(`Task with ID ${id} not found`);
+    }
+    return task;
   }
 
-  update(id: number, updateTaskDto: UpdateTaskDto) {
-    return `This action updates a #${id} task`;
+  update(id: string, updateTaskDto: UpdateTaskDto) {
+    const updatedTask = this.taskRepository.update(id, updateTaskDto);
+    if (!updatedTask) {
+      throw new NotFoundException(`Task with ID ${id} not found`);
+    }
+    return updatedTask;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} task`;
+  remove(id: string) {
+    const deleted = this.taskRepository.remove(id);
+    if (!deleted) {
+      throw new NotFoundException(`Task with ID ${id} not found`);
+    }
+    return { deleted: true };
   }
 }

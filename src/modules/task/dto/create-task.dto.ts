@@ -7,6 +7,7 @@ import {
   IsArray,
   IsOptional,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { TaskPriority, TaskStatus } from '../types';
 import { User } from 'src/modules/users/entities/user.entity';
 
@@ -28,7 +29,7 @@ export class CreateTaskDto {
   description: string;
 
   @ApiProperty({
-    example: 'Pending',
+    example: 'pending',
     description: 'Status of the task',
   })
   @IsEnum(TaskStatus, { message: 'invalid-status' })
@@ -36,7 +37,7 @@ export class CreateTaskDto {
   status: TaskStatus;
 
   @ApiProperty({
-    example: 'High',
+    example: 'high',
     description: 'Priority of the task',
   })
   @IsEnum(TaskPriority, { message: 'invalid-priority' })
@@ -47,6 +48,7 @@ export class CreateTaskDto {
     example: '2026-01-01T00:00:00.000Z',
     description: 'Due date of the task',
   })
+  @Type(() => Date)
   @IsDate({ message: 'invalid-due-date-type' })
   @IsNotEmpty({ message: 'due-date-is-required' })
   dueDate: Date;
