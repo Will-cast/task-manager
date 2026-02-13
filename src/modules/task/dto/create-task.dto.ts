@@ -1,1 +1,77 @@
-export class CreateTaskDto {}
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+  IsDate,
+  IsArray,
+  IsOptional,
+} from 'class-validator';
+import { TaskPriority, TaskStatus } from '../types';
+import { User } from 'src/modules/users/entities/user.entity';
+
+export class CreateTaskDto {
+  @ApiProperty({
+    example: 'Task 1',
+    description: 'Title of the task',
+  })
+  @IsString({ message: 'invalid-title-type' })
+  @IsNotEmpty({ message: 'title-is-required' })
+  title: string;
+
+  @ApiProperty({
+    example: 'Description of the task',
+    description: 'Description of the task',
+  })
+  @IsString({ message: 'invalid-description-type' })
+  @IsNotEmpty({ message: 'description-is-required' })
+  description: string;
+
+  @ApiProperty({
+    example: 'Pending',
+    description: 'Status of the task',
+  })
+  @IsEnum(TaskStatus, { message: 'invalid-status' })
+  @IsNotEmpty({ message: 'status-is-required' })
+  status: TaskStatus;
+
+  @ApiProperty({
+    example: 'High',
+    description: 'Priority of the task',
+  })
+  @IsEnum(TaskPriority, { message: 'invalid-priority' })
+  @IsNotEmpty({ message: 'priority-is-required' })
+  priority: TaskPriority;
+
+  @ApiProperty({
+    example: '2026-01-01T00:00:00.000Z',
+    description: 'Due date of the task',
+  })
+  @IsDate({ message: 'invalid-due-date-type' })
+  @IsNotEmpty({ message: 'due-date-is-required' })
+  dueDate: Date;
+
+  @ApiProperty({
+    example: '1',
+    description: 'Assignee of the task',
+  })
+  @IsString({ message: 'invalid-assignee-type' })
+  @IsNotEmpty({ message: 'assignee-is-required' })
+  assignee: User;
+
+  @ApiProperty({
+    example: ['Comment 1', 'Comment 2'],
+    description: 'Comments of the task',
+  })
+  @IsArray({ message: 'invalid-comments-type' })
+  @IsOptional()
+  comments?: string[];
+
+  @ApiProperty({
+    example: ['image1.jpg', 'image2.png'],
+    description: 'Attachments of the task',
+  })
+  @IsArray({ message: 'invalid-attachments-type' })
+  @IsOptional()
+  attachments?: string[];
+}
