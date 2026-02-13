@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Task } from './entities/task.entity';
+import { Task, TaskFieldsEnum } from './entities/task.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskPriority, TaskStatus } from './types';
@@ -42,8 +42,50 @@ export class TaskRepository {
     return newTask;
   }
 
-  findAll(): Task[] {
-    return this.tasks;
+  findAll(
+    order: 'asc' | 'desc' = 'desc',
+    by: TaskFieldsEnum = 'status',
+    take: number = 10,
+    page: number = 1,
+    available: boolean = false,
+    estado?: TaskStatus,
+  ): Task[] {
+    let result = this.tasks.filter((task) => !task.isDeleted);
+
+    if (estado) {
+      result = result.filter((task) => task.status === estado);
+    }
+
+    if (available) {
+      result = result.filter((task) => task.status !== TaskStatus.COMPLETED);
+    }
+
+    result.sort((a, b) => {
+      const multiplier = order === 'asc' ? 1 : -1;
+
+      if (by === 'createdAt' || by === 'updatedAt' || by === 'dueDate') {
+        const timeA = a[by]?.getTime() ?? 0;
+        const timeB = b[by]?.getTime() ?? 0;
+        return (timeA - timeB) * multiplier;
+      }
+
+      if (
+        by === 'id' ||
+        by === 'title' ||
+        by === 'description' ||
+        by === 'status' ||
+        by === 'priority'
+      ) {
+        const strA = a[by] ?? '';
+        const strB = b[by] ?? '';
+        return strA.localeCompare(strB) * multiplier;
+      }
+
+      return 0;
+    });
+
+    const skip = (page - 1) * take;
+    return result.slice(skip, skip + take);
   }
 
   findOne(id: string): Task | undefined {

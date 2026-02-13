@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskRepository } from './task.repository';
-import { Task } from './entities/task.entity';
+import { Task, TaskFieldsEnum } from './entities/task.entity';
 import { UserRepository } from '../users/user.repository';
 import { TaskStatus } from './types';
 
@@ -23,8 +23,22 @@ export class TaskService {
     return this.taskRepository.create(createTaskDto, user);
   }
 
-  findAll(): Task[] {
-    return this.taskRepository.findAll();
+  findAll(
+    order: 'asc' | 'desc' = 'desc',
+    by: TaskFieldsEnum = 'status',
+    take: number = 10,
+    page: number = 1,
+    available: boolean = false,
+    estado?: TaskStatus,
+  ): Task[] {
+    return this.taskRepository.findAll(
+      order,
+      by,
+      take,
+      page,
+      available,
+      estado,
+    );
   }
 
   findOne(id: string): Task {

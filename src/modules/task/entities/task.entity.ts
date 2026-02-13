@@ -70,3 +70,21 @@ export class Task extends TimeStamps {
   })
   isDeleted?: boolean;
 }
+
+export const TaskFieldsEnum = {
+  ID: 'id',
+  TITLE: 'title',
+  DESCRIPTION: 'description',
+  STATUS: 'status',
+  PRIORITY: 'priority',
+  DUE_DATE: 'dueDate',
+  ASSIGNEE: 'assignee',
+  COMMENTS: 'comments',
+  ATTACHMENTS: 'attachments',
+  IS_DELETED: 'isDeleted',
+  CREATED_AT: 'createdAt',
+  UPDATED_AT: 'updatedAt',
+} as const;
+
+export type TaskFieldsEnum =
+  (typeof TaskFieldsEnum)[keyof typeof TaskFieldsEnum];

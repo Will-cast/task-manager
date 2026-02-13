@@ -6,16 +6,20 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
+  DefaultValuePipe,
+  ParseBoolPipe,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
-import { Task } from './entities/task.entity';
+import { Task, TaskFieldsEnum } from './entities/task.entity';
 import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { TaskStatus } from './types';
@@ -47,9 +51,52 @@ export class TaskController {
     type: Task,
     isArray: true,
   })
+  @ApiQuery({
+    name: 'order',
+    required: false,
+    enum: ['asc', 'desc'],
+    description: 'Por defecto "desc" si no se especifica',
+  })
+  @ApiQuery({
+    name: 'by',
+    required: false,
+    enum: TaskFieldsEnum,
+    description: 'Field to sort by',
+  })
+  @ApiQuery({
+    name: 'take',
+    required: false,
+    type: Number,
+    default: 10,
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    default: 1,
+  })
+  @ApiQuery({
+    name: 'available',
+    required: false,
+    type: Boolean,
+    default: false,
+  })
+  @ApiQuery({
+    name: 'estado',
+    required: false,
+    enum: TaskStatus,
+  })
   @Get()
-  findAll(): Task[] {
-    return this.taskService.findAll();
+  findAll(
+    @Query('order') order: 'asc' | 'desc' = 'desc',
+    @Query('by') by: TaskFieldsEnum = 'status',
+    @Query('take') take: number = 10,
+    @Query('page') page: number = 1,
+    @Query('available', new DefaultValuePipe(false), ParseBoolPipe)
+    available: boolean = false,
+    @Query('estado') estado?: TaskStatus,
+  ): Task[] {
+    return this.taskService.findAll(order, by, take, page, available, estado);
   }
 
   @ApiOperation({
