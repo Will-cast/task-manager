@@ -41,7 +41,13 @@ export class Task extends TimeStamps {
   dueDate: Date;
 
   @ApiProperty({
-    example: '1',
+    example: {
+      id: '1',
+      name: 'William',
+      lastName: 'Quiñones',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
     description: 'Assignee of the task',
   })
   assignee: User;

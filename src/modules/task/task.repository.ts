@@ -3,6 +3,7 @@ import { Task } from './entities/task.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskPriority, TaskStatus } from './types';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class TaskRepository {
@@ -28,12 +29,13 @@ export class TaskRepository {
     },
   ];
 
-  create(createTaskDto: CreateTaskDto): Task {
+  create(createTaskDto: CreateTaskDto, user: User): Task {
     const newTask: Task = {
       ...createTaskDto,
       id: (this.tasks.length + 1).toString(),
       createdAt: new Date(),
       updatedAt: new Date(),
+      assignee: user,
     } as Task;
 
     this.tasks.push(newTask);
@@ -48,7 +50,11 @@ export class TaskRepository {
     return this.tasks.find((task) => task.id === id);
   }
 
-  update(id: string, updateTaskDto: UpdateTaskDto): Task | undefined {
+  update(
+    id: string,
+    updateTaskDto: UpdateTaskDto,
+    assignee?: User,
+  ): Task | undefined {
     const index = this.tasks.findIndex((task) => task.id === id);
     if (index === -1) return undefined;
 
@@ -56,6 +62,7 @@ export class TaskRepository {
       ...this.tasks[index],
       ...updateTaskDto,
       updatedAt: new Date(),
+      assignee,
     } as Task;
 
     return this.tasks[index];

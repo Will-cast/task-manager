@@ -10,7 +10,6 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { TaskPriority, TaskStatus } from '../types';
-import { User } from 'src/modules/users/entities/user.entity';
 import { TimeStamps } from 'src/common/types/timeStamps';
 
 export class CreateTaskDto extends TimeStamps {
@@ -57,11 +56,11 @@ export class CreateTaskDto extends TimeStamps {
 
   @ApiProperty({
     example: '1',
-    description: 'Assignee of the task',
+    description: 'Assignee user id of the task',
   })
-  @IsString({ message: 'invalid-assignee-type' })
-  @IsNotEmpty({ message: 'assignee-is-required' })
-  assignee: User;
+  @IsString({ message: 'invalid-userId-type' })
+  @IsNotEmpty({ message: 'user-id-is-required' })
+  AssigneeUserId: string;
 
   @ApiProperty({
     example: ['Comment 1', 'Comment 2'],
