@@ -80,6 +80,14 @@ export class CreateTaskDto extends TimeStamps {
 
   @ApiProperty({
     example: false,
+    description: 'Is completed',
+  })
+  @IsBoolean({ message: 'invalid-is-completed-type' })
+  @IsOptional()
+  isCompleted?: boolean;
+
+  @ApiProperty({
+    example: false,
     description: 'Is deleted',
   })
   @IsBoolean({ message: 'invalid-is-deleted-type' })
