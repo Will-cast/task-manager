@@ -15,8 +15,10 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
+import { TaskStatus } from './types';
 
 @ApiTags('Task')
 @Controller('task')
@@ -71,9 +73,42 @@ export class TaskController {
     description: 'The task has been successfully updated.',
     type: Task,
   })
+  @ApiParam({
+    example: '1',
+    description: 'Task id',
+    name: 'id',
+    type: 'string',
+  })
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto): Task {
     return this.taskService.update(id, updateTaskDto);
+  }
+  @ApiOperation({
+    description: 'Set completed status of the task',
+    summary: 'Set completed status of the task',
+  })
+  @ApiOkResponse({
+    description: 'The task status has been updated.',
+    type: Task,
+  })
+  @ApiParam({
+    example: '1',
+    description: 'Task id',
+    name: 'id',
+    type: 'string',
+  })
+  @ApiParam({
+    example: 'pending',
+    description: 'Task status',
+    name: 'status',
+    enum: TaskStatus,
+  })
+  @Patch(':id/set-task-status/:status')
+  setTaskStatus(
+    @Param('id') id: string,
+    @Param('status') status: TaskStatus,
+  ): Task {
+    return this.taskService.setTaskStatus(id, status);
   }
 
   @ApiOperation({
@@ -89,8 +124,14 @@ export class TaskController {
       },
     },
   })
+  @ApiParam({
+    example: '1',
+    description: 'Task id',
+    name: 'id',
+    type: 'string',
+  })
   @Delete(':id')
-  remove(@Param('id') id: string): { deleted: boolean } {
+  remove(@Param('id') id: string): Task {
     return this.taskService.remove(id);
   }
 }

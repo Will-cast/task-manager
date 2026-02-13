@@ -4,6 +4,7 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskRepository } from './task.repository';
 import { Task } from './entities/task.entity';
 import { UserRepository } from '../users/user.repository';
+import { TaskStatus } from './types';
 
 @Injectable()
 export class TaskService {
@@ -47,12 +48,19 @@ export class TaskService {
     }
     return updatedTask;
   }
-
-  remove(id: string): { deleted: boolean } {
-    const deleted = this.taskRepository.remove(id);
-    if (!deleted) {
+  setTaskStatus(id: string, status: TaskStatus): Task {
+    const updatedTask = this.taskRepository.update(id, { status });
+    if (!updatedTask) {
       throw new NotFoundException(`Task with ID ${id} not found`);
     }
-    return { deleted: true };
+    return updatedTask;
+  }
+
+  remove(id: string): Task {
+    const task = this.taskRepository.remove(id);
+    if (!task) {
+      throw new NotFoundException(`Task with ID ${id} not found`);
+    }
+    return task;
   }
 }

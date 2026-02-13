@@ -68,14 +68,14 @@ export class TaskRepository {
     return this.tasks[index];
   }
 
-  remove(id: string): boolean {
+  remove(id: string): Task | undefined {
     const index = this.tasks.findIndex((task) => task.id === id);
-    if (index === -1) return false;
+    if (index === -1) return undefined;
     this.tasks[index] = {
       ...this.tasks[index],
       isDeleted: true,
       deletedAt: new Date(),
     } as Task;
-    return true;
+    return this.tasks[index];
   }
 }
